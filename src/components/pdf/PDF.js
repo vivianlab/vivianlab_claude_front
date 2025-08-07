@@ -35,6 +35,61 @@ import AlertDialog from '../ui/AlertDialog';
 import { useMaterialDialogs } from '../../hooks/useDialog';
 import { formatDate } from '../../utils/dateUtils';
 
+// Scrolling filename component
+const ScrollingFilename = ({ filename, maxWidth = 200 }) => {
+  const [textRef, setTextRef] = useState(null);
+  const [shouldScroll, setShouldScroll] = useState(false);
+  const [scrollDistance, setScrollDistance] = useState(0);
+
+  useEffect(() => {
+    if (textRef) {
+      const textWidth = textRef.scrollWidth;
+      const containerWidth = textRef.clientWidth;
+      const needsScroll = textWidth > containerWidth;
+      setShouldScroll(needsScroll);
+      setScrollDistance(needsScroll ? textWidth - containerWidth : 0);
+    }
+  }, [textRef, filename]);
+
+  return (
+    <Box
+      sx={{
+        width: maxWidth,
+        overflow: 'hidden',
+        position: 'relative',
+        '&:hover .scrolling-text': {
+          animation: shouldScroll ? 'scrollText 5s ease-in-out infinite' : 'none',
+        },
+        '&::after': shouldScroll ? {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          width: '20px',
+          height: '100%',
+          background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.8))',
+          pointerEvents: 'none',
+        } : {},
+      }}
+    >
+      <Typography
+        ref={setTextRef}
+        variant="body2"
+        className="scrolling-text"
+        sx={{
+          whiteSpace: 'nowrap',
+          display: 'inline-block',
+          cursor: shouldScroll ? 'pointer' : 'default',
+          '--scroll-distance': `${scrollDistance}px`,
+        }}
+        title={filename}
+      >
+        {filename}
+      </Typography>
+    </Box>
+  );
+};
+
 const PDF = () => {
   // Upload modal states
   const [openModal, setOpenModal] = useState(false);
@@ -200,7 +255,20 @@ const PDF = () => {
   const paginatedPdfs = pdfs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
-    <Container maxWidth="lg">
+    <>
+      <style>
+        {`
+          @keyframes scrollText {
+            0%, 100% {
+              transform: translateX(0);
+            }
+            50% {
+              transform: translateX(var(--scroll-distance, 0px));
+            }
+          }
+        `}
+      </style>
+      <Container maxWidth="lg">
       <Paper sx={{ p: 3, mt: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
           <PdfIcon sx={{ fontSize: 32, color: 'primary.main', mr: 2 }} />
@@ -243,7 +311,7 @@ const PDF = () => {
 
         {/* PDF Table */}
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-          <TableContainer>
+          <TableContainer sx={{ maxWidth: '100%' }}>
             <Table stickyHeader>
               <TableHead>
                 <TableRow>
@@ -272,12 +340,10 @@ const PDF = () => {
                 ) : (
                   paginatedPdfs.map((pdf) => (
                     <TableRow key={pdf.id} hover>
-                      <TableCell>
+                      <TableCell colSpan={1}>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                           <PdfIcon sx={{ color: 'primary.main', fontSize: 20 }} />
-                          <Typography variant="body2" noWrap>
-                            {pdf.fileName || pdf.filename}
-                          </Typography>
+                          <ScrollingFilename filename={pdf.fileName || pdf.filename} maxWidth={250} />
                         </Box>
                       </TableCell>
                       <TableCell>
@@ -604,7 +670,8 @@ const PDF = () => {
           severity={alertDialog.severity}
         />
       </Container>
-    );
+    </>
+  );
   };
 
 export default PDF; 
