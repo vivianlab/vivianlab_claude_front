@@ -65,6 +65,20 @@ class PdfService {
       throw error;
     }
   }
+
+  /**
+   * Embed PDF by ID
+   * @param {string} id - PDF ID
+   * @returns {Promise<Object>} Embed response
+   */
+  async embedPdf(id) {
+    try {
+      const response = await httpService.post(`${API_BASE_URL}/pdf/embed`, { id });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }
 
 // Export singleton instance
