@@ -1,6 +1,5 @@
 import { httpService } from './httpService';
-
-const API_BASE_URL = 'https://vivian-claude.onrender.com';
+import { API_ENDPOINTS, API_CONFIG } from '../constants/api';
 
 class PdfService {
   /**
@@ -9,7 +8,7 @@ class PdfService {
    */
   async getAllPdfs() {
     try {
-      const response = await httpService.get(`${API_BASE_URL}/pdf`);
+      const response = await httpService.get(`${API_ENDPOINTS.PDF.GET_ALL}`);
       return response.data;
     } catch (error) {
       throw error;
@@ -23,7 +22,7 @@ class PdfService {
    */
   async getPdfById(id) {
     try {
-      const response = await httpService.get(`${API_BASE_URL}/pdf/${id}`);
+      const response = await httpService.get(`${API_ENDPOINTS.PDF.GET_BY_ID}/${id}`);
       return response.data;
     } catch (error) {
       throw error;
@@ -37,7 +36,7 @@ class PdfService {
    */
   async deletePdf(id) {
     try {
-      const response = await httpService.delete(`${API_BASE_URL}/pdf/${id}`);
+      const response = await httpService.delete(`${API_ENDPOINTS.PDF.DELETE}/${id}`);
       return response.data;
     } catch (error) {
       throw error;
@@ -51,7 +50,7 @@ class PdfService {
    */
   async uploadPdf(formData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/pdf`, {
+      const response = await fetch(`${API_CONFIG.BASE_URL}${API_ENDPOINTS.PDF.UPLOAD}`, {
         method: 'POST',
         body: formData,
       });
@@ -73,7 +72,7 @@ class PdfService {
    */
   async embedPdf(id) {
     try {
-      const response = await httpService.post(`${API_BASE_URL}/pdf/embed`, { id });
+      const response = await httpService.post(`${API_ENDPOINTS.PDF.EMBED}`, { id });
       return response.data;
     } catch (error) {
       throw error;

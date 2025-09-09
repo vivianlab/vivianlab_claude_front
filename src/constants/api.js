@@ -21,6 +21,13 @@ export const API_ENDPOINTS = {
     GET_BY_ID: '/user',
     CHANGE_ROLE: '/user/role',
     STATS: '/user/stats'
+  },
+  PDF: {
+    GET_ALL: '/pdf',
+    GET_BY_ID: '/pdf',
+    DELETE: '/pdf',
+    UPLOAD: '/pdf',
+    EMBED: '/pdf/embed'
   }
 };
 

@@ -1,11 +1,10 @@
 import { httpService } from './httpService';
-
-const API_BASE_URL = 'https://vivian-claude.onrender.com';
+import { API_ENDPOINTS } from '../constants/api';
 
 class UserService {
   async getAllUsers() {
     try {
-      const response = await httpService.get(`${API_BASE_URL}/user/all`);
+      const response = await httpService.get(`${API_ENDPOINTS.USER.GET_ALL}`);
       return response.data.data;
     } catch (error) {
       throw error;
@@ -14,7 +13,7 @@ class UserService {
 
   async getUserById(id) {
     try {
-      const response = await httpService.get(`${API_BASE_URL}/user/${id}`);
+      const response = await httpService.get(`${API_ENDPOINTS.USER.GET_BY_ID}/${id}`);
       return response.data.data;
     } catch (error) {
       throw error;
@@ -23,7 +22,7 @@ class UserService {
 
   async updateUser(id, userData) {
     try {
-      const response = await httpService.put(`${API_BASE_URL}/user/${id}`, userData);
+      const response = await httpService.put(`${API_ENDPOINTS.USER.UPDATE}/${id}`, userData);
       return response.data.data;
     } catch (error) {
       throw error;
@@ -32,7 +31,7 @@ class UserService {
 
   async deleteUser(id) {
     try {
-      const response = await httpService.delete(`${API_BASE_URL}/user/${id}`);
+      const response = await httpService.delete(`${API_ENDPOINTS.USER.DELETE}/${id}`);
       return response.data.data;
     } catch (error) {
       throw error;
@@ -41,7 +40,7 @@ class UserService {
 
   async changeUserRole(id, role) {
     try {
-      const response = await httpService.put(`${API_BASE_URL}/user/${id}/role`, { role });
+      const response = await httpService.put(`${API_ENDPOINTS.USER.CHANGE_ROLE}/${id}`, { role });
       return response.data.data;
     } catch (error) {
       throw error;
@@ -50,7 +49,7 @@ class UserService {
 
   async toggleUserAccess(id, isAllowed) {
     try {
-      const response = await httpService.put(`${API_BASE_URL}/user/${id}/access`, { isAllowed });
+      const response = await httpService.put(`${API_ENDPOINTS.USER.TOGGLE_ACCESS}/${id}`, { isAllowed });
       return response.data.data;
     } catch (error) {
       throw error;
@@ -59,7 +58,7 @@ class UserService {
 
   async getUserStats() {
     try {
-      const response = await httpService.get(`${API_BASE_URL}/user/stats`);
+      const response = await httpService.get(`${API_ENDPOINTS.USER.STATS}`);
       return response.data.data;
     } catch (error) {
       throw error;
