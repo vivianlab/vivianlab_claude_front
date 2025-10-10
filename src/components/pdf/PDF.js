@@ -36,71 +36,13 @@ import AlertDialog from "../ui/AlertDialog";
 import { useMaterialDialogs } from "../../hooks/useDialog";
 import { formatDate } from "../../utils/dateUtils";
 
-// Scrolling filename component
-const ScrollingFilename = ({ filename, maxWidth = 200 }) => {
-  const [textRef, setTextRef] = useState(null);
-  const [shouldScroll, setShouldScroll] = useState(false);
-  const [scrollDistance, setScrollDistance] = useState(0);
-
-  useEffect(() => {
-    if (textRef) {
-      const textWidth = textRef.scrollWidth;
-      const containerWidth = textRef.clientWidth;
-      const needsScroll = textWidth > containerWidth;
-      setShouldScroll(needsScroll);
-      setScrollDistance(needsScroll ? textWidth - containerWidth : 0);
-    }
-  }, [textRef, filename]);
-
-  return (
-    <Box
-      sx={{
-        width: maxWidth,
-        overflow: "hidden",
-        position: "relative",
-        "&:hover .scrolling-text": {
-          animation: shouldScroll
-            ? "scrollText 5s ease-in-out infinite"
-            : "none",
-        },
-        "&::after": shouldScroll
-          ? {
-              content: '""',
-              position: "absolute",
-              top: 0,
-              right: 0,
-              width: "20px",
-              height: "100%",
-              background:
-                "linear-gradient(to right, transparent, rgba(255,255,255,0.8))",
-              pointerEvents: "none",
-            }
-          : {},
-      }}
-    >
-      <Typography
-        ref={setTextRef}
-        variant="body2"
-        className="scrolling-text"
-        sx={{
-          whiteSpace: "nowrap",
-          display: "inline-block",
-          cursor: shouldScroll ? "pointer" : "default",
-          "--scroll-distance": `${scrollDistance}px`,
-        }}
-        title={filename}
-      >
-        {filename}
-      </Typography>
-    </Box>
-  );
-};
-
 const PDF = () => {
   // Upload modal states
   const [openModal, setOpenModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [doi, setDoi] = useState("");
+  const [pmid, setPmid] = useState("");
+  const [tags, setTags] = useState("");
   const [uploadError, setUploadError] = useState("");
   const [isUploading, setIsUploading] = useState(false);
 
@@ -134,6 +76,8 @@ const PDF = () => {
     setOpenModal(true);
     setSelectedFile(null);
     setDoi("");
+    setPmid("");
+    setTags("");
     setUploadError("");
     setIsUploading(false);
   };
@@ -142,6 +86,8 @@ const PDF = () => {
     setOpenModal(false);
     setSelectedFile(null);
     setDoi("");
+    setPmid("");
+    setTags("");
     setUploadError("");
     setIsUploading(false);
   };
@@ -240,6 +186,11 @@ const PDF = () => {
       setUploadError("Please enter a DOI.");
       return;
     }
+    // pmid is optional; tags optional. If provided, validate lightly.
+    if (pmid && !/^[0-9]+$/.test(pmid.trim())) {
+      setUploadError("PMID must be numeric if provided.");
+      return;
+    }
 
     try {
       setIsUploading(true);
@@ -249,6 +200,8 @@ const PDF = () => {
       const formData = new FormData();
       formData.append("pdf", selectedFile);
       formData.append("doi", doi);
+      if (pmid.trim()) formData.append("pmid", pmid.trim());
+      if (tags.trim()) formData.append("tags", tags.trim());
 
       // Use pdfService to upload the PDF
       const result = await pdfService.uploadPdf(formData);
@@ -360,7 +313,7 @@ const PDF = () => {
               <Table stickyHeader sx={{ width: "100%" }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: "bold" }}>Filename</TableCell>
+                    <TableCell sx={{ fontWeight: "bold" }}>PMID</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }}>DOI</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }}>Embedded</TableCell>
                     <TableCell sx={{ fontWeight: "bold" }}>
@@ -391,21 +344,9 @@ const PDF = () => {
                     paginatedPdfs.map((pdf) => (
                       <TableRow key={pdf.id} hover>
                         <TableCell>
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 1,
-                            }}
-                          >
-                            <PdfIcon
-                              sx={{ color: "primary.main", fontSize: 20 }}
-                            />
-                            <ScrollingFilename
-                              filename={pdf.fileName || pdf.filename}
-                              maxWidth={250}
-                            />
-                          </Box>
+                          <Typography variant="body2">
+                            {pdf.pmid || "N/A"}
+                          </Typography>
                         </TableCell>
                         <TableCell>
                           <Chip
@@ -594,19 +535,38 @@ const PDF = () => {
               </Box>
             </Box>
 
-            {/* DOI Input Section */}
+            {/* DOI / PMID / Tags Input Section */}
             <Box sx={{ mb: 3 }}>
               <Typography variant="h6" gutterBottom>
-                DOI (Digital Object Identifier)
+                Metadata
               </Typography>
+              <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2, mb: 2 }}>
+                <TextField
+                  fullWidth
+                  label="DOI"
+                  variant="outlined"
+                  value={doi}
+                  onChange={(e) => setDoi(e.target.value)}
+                  placeholder="e.g., 10.1000/182"
+                  helperText="Required"
+                />
+                <TextField
+                  fullWidth
+                  label="PMID"
+                  variant="outlined"
+                  value={pmid}
+                  onChange={(e) => setPmid(e.target.value)}
+                  placeholder="e.g., 12345678"
+                  helperText="Optional, numeric"
+                />
+              </Box>
               <TextField
                 fullWidth
-                label="Enter DOI"
+                label="Tags"
                 variant="outlined"
-                value={doi}
-                onChange={(e) => setDoi(e.target.value)}
-                placeholder="e.g., 10.1000/182"
-                helperText="Enter the Digital Object Identifier for the PDF document"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                placeholder='e.g., "[{"Stage of Menopause":"Menopause"}{"Symptom Categories":"Musculoskeletal"}]"'
               />
             </Box>
 
