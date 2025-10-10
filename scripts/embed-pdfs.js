@@ -66,7 +66,7 @@ async function main() {
       
       try {
         const result = await embedPdf(id);
-        console.log(`[${i + 1}/${ids.length}] Success:`, JSON.stringify(result, null, 2));
+        console.log(`[${i + 1}/${ids.length}] Success`);
       } catch (error) {
         console.error(`[${i + 1}/${ids.length}] Error embedding PDF ${id}:`, error.message);
       }
