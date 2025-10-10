@@ -16,6 +16,20 @@ class PdfService {
   }
 
   /**
+   * Get all unembedded PDFs from the backend
+   * @returns {Promise<Array>} Array of PDF objects
+   */
+
+  async getAllUnembeddedPdfs() {
+    try {
+      const response = await httpService.get(`${API_ENDPOINTS.PDF.GET_ALL_UNEMBEDDED}`);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
    * Get PDF content by ID
    * @param {string} id - PDF ID
    * @returns {Promise<Object>} PDF object with content

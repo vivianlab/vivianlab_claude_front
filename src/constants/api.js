@@ -24,6 +24,7 @@ export const API_ENDPOINTS = {
   },
   PDF: {
     GET_ALL: '/pdf',
+    GET_ALL_UNEMBEDDED: '/pdf/unembedded',
     GET_BY_ID: '/pdf',
     DELETE: '/pdf',
     UPLOAD: '/pdf',

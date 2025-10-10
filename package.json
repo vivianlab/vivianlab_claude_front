@@ -23,7 +23,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "read:xlsx": "node scripts/read-ingestion.js --file=src/data/ingestion.xlsx --rows=1"
+    "read:xlsx": "node scripts/read-ingestion.js --file=src/data/ingestion.xlsx --rows=1",
+    "get:unembedded": "node scripts/get-unembedded-pdfs.js",
+    "embed:pdfs": "node scripts/embed-pdfs.js"
   },
   "eslintConfig": {
     "extends": [
