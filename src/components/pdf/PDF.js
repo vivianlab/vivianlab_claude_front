@@ -18,6 +18,7 @@ import {
   Chip,
   Tooltip,
   TablePagination,
+  InputAdornment,
 } from "@mui/material";
 import {
   PictureAsPdf as PdfIcon,
@@ -28,6 +29,8 @@ import {
   Delete as DeleteIcon,
   Refresh as RefreshIcon,
   Storage as EmbedIcon,
+  Search as SearchIcon,
+  Clear as ClearIcon,
 } from "@mui/icons-material";
 import { CircularProgress } from "@mui/material";
 import { pdfService } from "../../services/pdfService";
@@ -56,6 +59,9 @@ const PDF = () => {
   const [selectedPdf, setSelectedPdf] = useState(null);
   const [contentLoading, setContentLoading] = useState(false);
   const [contentError, setContentError] = useState("");
+
+  // Search states
+  const [searchPmid, setSearchPmid] = useState("");
 
   // Pagination states
   const [page, setPage] = useState(0);
@@ -236,8 +242,27 @@ const PDF = () => {
     setPage(0);
   };
 
-  // Calculate paginated data
-  const paginatedPdfs = pdfs.slice(
+  // Handle search input change
+  const handleSearchChange = (event) => {
+    setSearchPmid(event.target.value);
+    setPage(0); // Reset to first page when searching
+  };
+
+  // Clear search
+  const handleClearSearch = () => {
+    setSearchPmid("");
+    setPage(0);
+  };
+
+  // Filter PDFs by PMID search
+  const filteredPdfs = pdfs.filter((pdf) => {
+    if (!searchPmid.trim()) return true;
+    const pmidStr = pdf.pmid ? String(pdf.pmid) : "";
+    return pmidStr.toLowerCase().includes(searchPmid.toLowerCase().trim());
+  });
+
+  // Calculate paginated data from filtered results
+  const paginatedPdfs = filteredPdfs.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
@@ -281,23 +306,50 @@ const PDF = () => {
               alignItems: "center",
             }}
           >
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={handleOpenModal}
-              sx={{ mb: 2 }}
-            >
-              Add PDF
-            </Button>
-            <Button
-              variant="outlined"
-              startIcon={<RefreshIcon />}
-              onClick={fetchPdfs}
-              disabled={loading}
-              sx={{ mb: 2 }}
-            >
-              Refresh
-            </Button>
+            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                onClick={handleOpenModal}
+              >
+                Add PDF
+              </Button>
+              <Button
+                variant="outlined"
+                startIcon={<RefreshIcon />}
+                onClick={fetchPdfs}
+                disabled={loading}
+              >
+                Refresh
+              </Button>
+            </Box>
+
+            {/* PMID Search */}
+            <TextField
+              size="small"
+              placeholder="Search by PMID..."
+              value={searchPmid}
+              onChange={handleSearchChange}
+              sx={{ minWidth: 250 }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon color="action" />
+                  </InputAdornment>
+                ),
+                endAdornment: searchPmid && (
+                  <InputAdornment position="end">
+                    <IconButton
+                      size="small"
+                      onClick={handleClearSearch}
+                      edge="end"
+                    >
+                      <ClearIcon fontSize="small" />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
           </Box>
 
           {/* Error Alert */}
@@ -332,11 +384,13 @@ const PDF = () => {
                         <CircularProgress size={24} />
                       </TableCell>
                     </TableRow>
-                  ) : pdfs.length === 0 ? (
+                  ) : filteredPdfs.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={6} align="center">
                         <Typography variant="body2" color="text.secondary">
-                          No PDFs found. Upload your first PDF!
+                          {searchPmid
+                            ? `No PDFs found matching PMID "${searchPmid}"`
+                            : "No PDFs found. Upload your first PDF!"}
                         </Typography>
                       </TableCell>
                     </TableRow>
@@ -424,18 +478,18 @@ const PDF = () => {
             </TableContainer>
 
             {/* Pagination */}
-            {!loading && pdfs.length > 0 && (
+            {!loading && filteredPdfs.length > 0 && (
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, 50]}
                 component="div"
-                count={pdfs.length}
+                count={filteredPdfs.length}
                 rowsPerPage={rowsPerPage}
                 page={page}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 labelRowsPerPage="Rows per page:"
                 labelDisplayedRows={({ from, to, count }) =>
-                  `${from}-${to} of ${count}`
+                  `${from}-${to} of ${count}${searchPmid ? " (filtered)" : ""}`
                 }
               />
             )}
