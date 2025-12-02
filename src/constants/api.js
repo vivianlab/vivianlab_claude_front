@@ -1,6 +1,6 @@
 // API Configuration
 export const API_CONFIG = {
-  BASE_URL: 'https://vivian-claude.onrender.com',
+  BASE_URL: 'https://vivianlab-claude-test.onrender.com',
   TIMEOUT: 10000,
   RETRY_ATTEMPTS: 3
 };

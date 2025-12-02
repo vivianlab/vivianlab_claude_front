@@ -123,7 +123,7 @@ async function uploadPdf(row, pdfPath, index, total) {
     const doi = (row.DOI || '').toString().trim();
     const pmid = (row.PMID || '').toString().trim();
     const tags = row.tags ? JSON.stringify(row.tags) : '';
-    const apiBase = 'https://vivian-claude.onrender.com';
+    const apiBase = 'https://vivianlab-claude-test.onrender.com';
     const apiEndpoint = '/pdf';
 
     if (pmid && !/^[0-9]+$/.test(pmid)) {

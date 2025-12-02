@@ -14,7 +14,7 @@ dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
  */
 async function embedPdf(id) {
   try {
-    const apiBase = 'https://vivian-claude.onrender.com';
+    const apiBase = 'https://vivianlab-claude-test.onrender.com';
     const apiEndpoint = '/pdf/embed';
     const url = `${apiBase}${apiEndpoint}`;
 

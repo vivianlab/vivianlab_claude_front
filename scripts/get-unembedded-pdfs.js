@@ -13,7 +13,7 @@ dns.setServers(['8.8.8.8', '8.8.4.4', '1.1.1.1']);
  */
 async function getAllUnembeddedPdfs() {
   try {
-    const apiBase = 'https://vivian-claude.onrender.com';
+    const apiBase = 'https://vivianlab-claude-test.onrender.com';
     const apiEndpoint = '/pdf/unembedded';
     const url = `${apiBase}${apiEndpoint}`;
 
