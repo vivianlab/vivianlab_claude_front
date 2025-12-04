@@ -17,7 +17,7 @@ import { CircularProgress } from "@mui/material";
 const AI = () => {
   // State management
   const [question, setQuestion] = useState("");
-  const [threshold, setThreshold] = useState(0.5);
+  const [threshold, setThreshold] = useState(0.74);
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -130,7 +130,7 @@ const AI = () => {
             fullWidth
             type="number"
             variant="outlined"
-            placeholder="0.5"
+            placeholder="0.74"
             value={threshold}
             onChange={(e) => setThreshold(parseFloat(e.target.value))}
             disabled={loading}
