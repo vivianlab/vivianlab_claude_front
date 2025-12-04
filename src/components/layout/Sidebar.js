@@ -16,6 +16,7 @@ import {
   People as PeopleIcon,
   Settings as SettingsIcon,
   PictureAsPdf as PdfIcon,
+  Psychology as AiIcon,
 } from '@mui/icons-material';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -31,6 +32,7 @@ const Sidebar = ({ open, drawerWidth }) => {
     // Only show Users menu if not loading and user is admin
     ...(!isLoading && isAdmin ? [{ text: 'Users', icon: <PeopleIcon />, path: '/users' }] : []),
     { text: 'PDF', icon: <PdfIcon />, path: '/pdf' },
+    { text: 'AI', icon: <AiIcon />, path: '/ai' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/settings' }
   ];
 

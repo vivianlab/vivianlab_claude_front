@@ -29,6 +29,9 @@ export const API_ENDPOINTS = {
     DELETE: '/pdf',
     UPLOAD: '/pdf',
     EMBED: '/pdf/embed'
+  },
+  AI: {
+    CHAT: '/chat'  // ← Add this section
   }
 };
 

@@ -8,6 +8,7 @@ import GlobalLayout from './components/layout/GlobalLayout';
 import Dashboard from './components/dashboard/Dashboard';
 import Users from './components/user/Users';
 import PDF from './components/pdf/PDF';
+import AI from './components/ai/AI';
 import LoadingSpinner from './components/ui/LoadingSpinner';
 
 // Create theme
@@ -79,6 +80,13 @@ const AppRoutes = () => {
         <ProtectedRoute>
           <GlobalLayout>
             <PDF />
+          </GlobalLayout>
+        </ProtectedRoute>
+      } />
+      <Route path="/ai" element={
+        <ProtectedRoute>
+          <GlobalLayout>
+            <AI />
           </GlobalLayout>
         </ProtectedRoute>
       } />
