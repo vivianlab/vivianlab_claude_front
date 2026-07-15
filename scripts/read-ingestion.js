@@ -23,7 +23,7 @@ async function main() {
   const args = parseArgs(process.argv);
   const fileArg = 'src/data/ingestion.xlsx';
   const batchNumber = parseInt(args.rows || '1', 10); // rows arg now represents batch number
-  const batchSize = 10; // Process 10 rows per batch
+  const batchSize = 100; // Process 100 rows per batch
   const sheetIndex = parseInt(args.sheet || '0', 10);
 
   const filePath = path.resolve(process.cwd(), fileArg);
